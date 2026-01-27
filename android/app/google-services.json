@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "381761145139",
+    "project_id": "flutter-notifications-te-fe42f",
+    "storage_bucket": "flutter-notifications-te-fe42f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:381761145139:android:29bd163843976b8aa0d646",
+        "android_client_info": {
+          "package_name": "com.jzetien.push_notificacion_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIRWB9WjHXe5tLvxKEyBT4gBaZ1yvSA9U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
