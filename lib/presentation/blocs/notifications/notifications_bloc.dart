@@ -18,8 +18,21 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
+  int pushNumberId = 0;
 
-  NotificationsBloc() : super(const NotificationsState()) {
+  final Future<void> Function()? requestPermissionLocalNotifications;
+  final void Function({
+    required int id,
+    String? title,
+    String? body,
+    String? data,
+  })?
+  showLocalNotification;
+
+  NotificationsBloc({
+    this.showLocalNotification,
+    this.requestPermissionLocalNotifications,
+  }) : super(const NotificationsState()) {
     on<NotificationStatusChanged>(_notificationStatusChanged);
     on<NotificationReceived>(_onPueshMessageReceived);
 
@@ -82,9 +95,15 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
           : message.notification!.apple?.imageUrl,
     );
 
-  
+    if (showLocalNotification != null) {
+      showLocalNotification!(
+        id: ++pushNumberId,
+        title: notification.title,
+        body: notification.body,
+        data: notification.messageId,
+      );
+    }
 
-    
     add(NotificationReceived(notification));
   }
 
@@ -102,19 +121,23 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       provisional: false,
       sound: true,
     );
-    
-    // Solicitar permiso para notificaciones locales
-    await LocalNotifications.requestPermissionLocalNotifications();
 
+    // Solicitar permiso para notificaciones locales
+    if (requestPermissionLocalNotifications != null) {
+      await requestPermissionLocalNotifications!();
+    }
+    //await LocalNotifications.requestPermissionLocalNotifications();
     add(NotificationStatusChanged(settings.authorizationStatus));
   }
 
-  PushMessage? getMessageById(String pushMessageId){
-    final exist = state.notificactions.any((element)=> element.messageId == pushMessageId);
-    if(!exist) return null;
+  PushMessage? getMessageById(String pushMessageId) {
+    final exist = state.notificactions.any(
+      (element) => element.messageId == pushMessageId,
+    );
+    if (!exist) return null;
 
-    return state.notificactions.firstWhere((element) => element.messageId == pushMessageId);
+    return state.notificactions.firstWhere(
+      (element) => element.messageId == pushMessageId,
+    );
   }
-
-
 }
